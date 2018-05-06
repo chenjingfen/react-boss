@@ -28,7 +28,6 @@ const User = mongoose.model('user',new mongoose.Schema({
 
 
 
-
 //新建app
 const app = express()
 
@@ -41,9 +40,9 @@ app.get('/data',function(req,res){
     User.findOne({name:'xiaoming'},function(err,doc){
         res.json(doc)
     })
-    User.find({},function(err,doc){
+  /*  User.find({},function(err,doc){
         res.json(doc)
-    })
+    })*/
     /*res.json({name:'mook'})*/
 })
 
