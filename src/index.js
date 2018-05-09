@@ -1,28 +1,43 @@
-import { createStore } from 'redux'
+import React from 'react'
+import ReactDom from 'react-dom'
+import App from './App.js'
+import {applyMiddleware, compose, createStore} from 'redux'
+import {Provider} from 'react-redux'
+import thunk from 'redux-thunk'
+import {BrowserRouter, Link, Route,Redirect,Switch} from 'react-router-dom'
+import reducers from './reducers'
+import Auth from './Auth'
+import Dashboard from './Dashboard'
+import config from './config'
 
-//新建store
 
-function counter(state=0,action) {
-    console.log(action)
-    switch (action.type){
-        case '加机关枪':
-            return state + 1
-        case '减机关枪':
-            return state - 1
-        default :
-            return 10
+const reduxDevtools = window.devToolsExtension ? window.devToolsExtension : f => f
+const store = createStore(reducers, compose(
+    applyMiddleware(thunk),
+    reduxDevtools()
+))
+console.log(store.getState())
+
+
+class Test extends React.Component{
+    constructor(props){
+        super(props)
+    }
+    render(){
+        return <div>测试组件{this.props.match.url}</div>
     }
 }
-const store = createStore(counter)
-const init = store.getState()
-console.log(init)
+ReactDom.render(
+    <Provider store={store}>
+        <BrowserRouter>
+            <Switch>
+                {/*只渲染命中的第一个组件*/}
+                <Route path='/login' exact component={Auth}></Route>
+                <Route path='/dashboard' component={Dashboard}></Route>
+                <Redirect to='/dashboard'></Redirect>
+            </Switch>
+        </BrowserRouter>
+    </Provider>,
+    document.getElementById('root'))
 
-//派发事件 传递action
-store.dispatch({type:'加机关枪'})
-console.log(store.getState())
-store.dispatch({type:'加机关枪'})
-console.log(store.getState())
-store.dispatch({type:'加机关枪'})
-console.log(store.getState())
-store.dispatch({type:'加机关枪'})
-console.log(store.getState())
+
